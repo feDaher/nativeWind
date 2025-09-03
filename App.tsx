@@ -1,12 +1,13 @@
-import '../../global.css';
+import './global.css';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View } from 'react-native';
 import Home from './app/screens/Home';
+import Calculator from './app/screens/Calculator';
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Home />
+      <Calculator />
       <StatusBar style="auto" />
     </View>
   );
