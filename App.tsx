@@ -7,6 +7,7 @@ import Calculator from './app/screens/Calculator';
 export default function App() {
   return (
     <View style={styles.container}>
+      {/* <Home /> */}
       <Calculator />
       <StatusBar style="auto" />
     </View>
