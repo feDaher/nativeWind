@@ -129,8 +129,7 @@ export default function Calculator() {
         <Text className="text-lg font-semibold mt-4 mb-2">Resultado</Text>
         <View className="rounded-lg bg-zinc-100 p-3">
           {!valido ? (
-            // <Text className="text-red-600 font-semibold">{linhas[0]}</Text>
-            <Text className="text-red-600 font-semibold">Test</Text>
+            <Text className="text-red-600 font-semibold">{linhas[0]}</Text>
           ) : (
             linhas.map((l, i) => <Text key={i}>{l}</Text>)
           )}
