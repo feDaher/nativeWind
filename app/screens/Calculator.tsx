@@ -1,11 +1,18 @@
-// import '../../global.css';
 import React, { useMemo, useState } from "react";
 import { View, Text, TextInput, Pressable, Keyboard, ScrollView, SafeAreaView } from "react-native";
 import { Picker } from "@react-native-picker/picker";
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import Box from "../components/Box";
+import Input from "../components/Input";
 
-const Box: React.FC<React.PropsWithChildren<{ className?: string }>> = ({ children, className }) => (
-  <View className={className}>{children}</View>
-);
+type RootStackParamList = {
+  Home: undefined;
+  Calculator: undefined;
+};
+
+type CalculatorScreenProps = {
+  navigation: NativeStackNavigationProp<RootStackParamList, 'Calculator'>;
+};
 
 type Operacao = 'todas' | 'soma' | 'sub' | 'mul' | 'div' | 'mod';
 
@@ -21,7 +28,7 @@ function formatNumber(n: number): string {
   return Number.isInteger(n) ? String(n) : n.toString();
 }
 
-export default function Calculator() {
+export default function Calculator({ navigation }: CalculatorScreenProps) {
   const [aText, setAText] = useState<string>('');
   const [bText, setBText] = useState<string>('');
   const [op, setOp] = useState<Operacao>('todas');
@@ -30,7 +37,8 @@ export default function Calculator() {
     const a = parseNumber(aText);
     const b = parseNumber(bText);
 
-    if (!a || !b || !isNumberValid(a) || !isNumberValid(b)) {
+    // Corrigido para aceitar zero como entrada válida
+    if (aText.trim() === '' || bText.trim() === '' || !isNumberValid(a) || !isNumberValid(b)) {
       return { valido: false, a, b, linhas: ["Entrada inválida. Informe dois números."] };
     }
 
@@ -44,14 +52,14 @@ export default function Calculator() {
       soma: [`Soma: ${formatNumber(a)} + ${formatNumber(b)} = ${formatNumber(soma)}`],
       sub:  [`Subtração: ${formatNumber(a)} - ${formatNumber(b)} = ${formatNumber(sub)}`],
       mul:  [`Multiplicação: ${formatNumber(a)} × ${formatNumber(b)} = ${formatNumber(mul)}`],
-      div:  [`Divisão: ${formatNumber(a)} ÷ ${formatNumber(b)} = ${div}`],
-      mod:  [`Resto: ${formatNumber(a)} % ${formatNumber(b)} = ${mod}`],
+      div:  [`Divisão: ${formatNumber(a)} ÷ ${formatNumber(b)} = ${Number(div)}`],
+      mod:  [`Resto: ${formatNumber(a)} % ${formatNumber(b)} = ${Number(mod)}`],
       todas: [
-        `Soma: ${formatNumber(a)} + ${formatNumber(b)} = ${formatNumber(soma)}`,
-        `Subtração: ${formatNumber(a)} - ${formatNumber(b)} = ${formatNumber(sub)}`,
-        `Multiplicação: ${formatNumber(a)} × ${formatNumber(b)} = ${formatNumber(mul)}`,
-        `Divisão: ${formatNumber(a)} ÷ ${formatNumber(b)} = ${div}`,
-        `Resto: ${formatNumber(a)} % ${formatNumber(b)} = ${mod}`,
+        `Soma: ${formatNumber(a)} + ${formatNumber(b)} = ${Number(soma).toFixed(2)}`,
+        `Subtração: ${formatNumber(a)} - ${formatNumber(b)} = ${Number(sub).toFixed(2)}`,
+        `Multiplicação: ${formatNumber(a)} × ${formatNumber(b)} = ${Number(mul).toFixed(2)}`,
+        `Divisão: ${formatNumber(a)} ÷ ${formatNumber(b)} = ${Number(div).toFixed(2)}`,
+        `Resto: ${formatNumber(a)} % ${formatNumber(b)} = ${Number(mod).toFixed(2)}`,
       ],
     };
 
@@ -59,8 +67,6 @@ export default function Calculator() {
   }, [aText, bText, op]);
 
   function calcular() {
-    // no RN, já calculamos em tempo real via useMemo;
-    // aqui só fechamos o teclado para UX
     Keyboard.dismiss();
   }
 
@@ -73,15 +79,15 @@ export default function Calculator() {
   return (
     <SafeAreaView className="mt-20">
       <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: 16 }}>
-        <Text className="text-2xl font-bold mb-4">Calculadora de Operações</Text>
+        <Text className="text-2xl font-bold mb-4 text-center">Calculadora de Operações</Text>
 
-        <Box className="rounded-xl border border-zinc-300 p-4 gap-3">
-          <Text className="font-semibold">Entradas</Text>
+        <Box className="rounded-xl border border-zinc-300 p-4 gap-3 shadow-lg bg-white">
+          <Text className="font-semibold text-center">Entradas</Text>
 
           <Box className="flex-row gap-3">
             <Box className="flex-1">
-              <Text className="mb-1">Número A</Text>
-              <TextInput
+              <Input
+                label="Número A"
                 keyboardType="decimal-pad"
                 value={aText}
                 onChangeText={setAText}
@@ -92,8 +98,8 @@ export default function Calculator() {
             </Box>
 
             <Box className="flex-1">
-              <Text className="mb-1">Número B</Text>
-              <TextInput
+              <Input
+                label="Número B"
                 keyboardType="decimal-pad"
                 value={bText}
                 onChangeText={setBText}
@@ -117,17 +123,23 @@ export default function Calculator() {
           </View>
 
           <View className="flex-row gap-3 mt-3">
-            <Pressable onPress={calcular} className="bg-blue-600 rounded-lg px-4 py-2">
+            <Pressable onPress={calcular} className="bg-blue-600 rounded-lg px-4 py-2 shadow">
               <Text className="text-white font-semibold">Calcular</Text>
             </Pressable>
-            <Pressable onPress={limpar} className="bg-zinc-200 rounded-lg px-4 py-2">
+            <Pressable onPress={limpar} className="bg-zinc-200 rounded-lg px-4 py-2 shadow">
               <Text className="text-zinc-800 font-semibold">Limpar</Text>
+            </Pressable>
+            <Pressable
+              onPress={() => navigation.goBack()}
+              className="bg-blue-400 rounded-lg px-4 py-2 shadow"
+            >
+              <Text className="text-white font-semibold">Voltar</Text>
             </Pressable>
           </View>
         </Box>
 
-        <Text className="text-lg font-semibold mt-4 mb-2">Resultado</Text>
-        <View className="rounded-lg bg-zinc-100 p-3">
+        <Text className="text-lg font-semibold mt-4 mb-2 text-center">Resultado</Text>
+        <View className="rounded-lg bg-zinc-100 p-3 shadow">
           {!valido ? (
             <Text className="text-red-600 font-semibold">{linhas[0]}</Text>
           ) : (
