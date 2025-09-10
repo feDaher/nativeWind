@@ -1,4 +1,3 @@
-// import '../../global.css';
 import React, { useMemo, useState } from "react";
 import { View, Text, TextInput, Pressable, Keyboard, ScrollView, SafeAreaView } from "react-native";
 import { Picker } from "@react-native-picker/picker";
@@ -41,17 +40,17 @@ export default function Calculator() {
     const mod = b === 0 ? "Indefinido (módulo por zero)" : formatNumber(a % b);
 
     const map: Record<Operacao, string[]> = {
-      soma: [`Soma: ${formatNumber(a)} + ${formatNumber(b)} = ${formatNumber(soma)}`],
-      sub:  [`Subtração: ${formatNumber(a)} - ${formatNumber(b)} = ${formatNumber(sub)}`],
-      mul:  [`Multiplicação: ${formatNumber(a)} × ${formatNumber(b)} = ${formatNumber(mul)}`],
-      div:  [`Divisão: ${formatNumber(a)} ÷ ${formatNumber(b)} = ${div}`],
-      mod:  [`Resto: ${formatNumber(a)} % ${formatNumber(b)} = ${mod}`],
+      soma: [`Soma: ${formatNumber(a)} + ${formatNumber(b)} = ${soma.toFixed(2)}`],
+      sub:  [`Subtração: ${formatNumber(a)} - ${formatNumber(b)} = ${sub.toFixed(2)}`],
+      mul:  [`Multiplicação: ${formatNumber(a)} × ${formatNumber(b)} = ${mul.toFixed(2)}`],
+      div:  [`Divisão: ${formatNumber(a)} ÷ ${formatNumber(b)} = ${Number(div).toFixed(2)}`],
+      mod:  [`Resto: ${formatNumber(a)} % ${formatNumber(b)} = ${Number(mod).toFixed(2)}`],
       todas: [
-        `Soma: ${formatNumber(a)} + ${formatNumber(b)} = ${formatNumber(soma)}`,
-        `Subtração: ${formatNumber(a)} - ${formatNumber(b)} = ${formatNumber(sub)}`,
-        `Multiplicação: ${formatNumber(a)} × ${formatNumber(b)} = ${formatNumber(mul)}`,
-        `Divisão: ${formatNumber(a)} ÷ ${formatNumber(b)} = ${div}`,
-        `Resto: ${formatNumber(a)} % ${formatNumber(b)} = ${mod}`,
+        `Soma: ${formatNumber(a)} + ${formatNumber(b)} = ${Number(soma).toFixed(2)}`,
+        `Subtração: ${formatNumber(a)} - ${formatNumber(b)} = ${sub.toFixed(2)}`,
+        `Multiplicação: ${formatNumber(a)} × ${formatNumber(b)} = ${(mul).toFixed(2)}`,
+        `Divisão: ${formatNumber(a)} ÷ ${formatNumber(b)} = ${Number(div).toFixed(2)}`,
+        `Resto: ${formatNumber(a)} % ${formatNumber(b)} = ${Number(mod).toFixed(2)}`,
       ],
     };
 
