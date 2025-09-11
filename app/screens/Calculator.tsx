@@ -1,8 +1,9 @@
 import React, { useMemo, useState } from "react";
-import { View, Text, TextInput, Pressable, Keyboard, ScrollView, SafeAreaView } from "react-native";
+import { View, Text, Pressable, Keyboard, ScrollView, SafeAreaView } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { parseNumber, isNumberValid, formatNumber  } from "@/utils";
 import Box from "../components/Box";
+import Input from "../components/Input";
 
 type Operacao = 'todas' | 'soma' | 'sub' | 'mul' | 'div' | 'mod';
 
@@ -62,7 +63,7 @@ export default function Calculator() {
           <Box className="flex-row gap-3">
             <Box className="flex-1">
               <Text className="mb-1">Número A</Text>
-              <TextInput
+              <Input
                 keyboardType="decimal-pad"
                 value={aText}
                 onChangeText={setAText}
@@ -74,7 +75,7 @@ export default function Calculator() {
 
             <Box className="flex-1">
               <Text className="mb-1">Número B</Text>
-              <TextInput
+              <Input
                 keyboardType="decimal-pad"
                 value={bText}
                 onChangeText={setBText}
