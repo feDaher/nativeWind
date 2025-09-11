@@ -1,24 +1,10 @@
 import React, { useMemo, useState } from "react";
 import { View, Text, TextInput, Pressable, Keyboard, ScrollView, SafeAreaView } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-
-const Box: React.FC<React.PropsWithChildren<{ className?: string }>> = ({ children, className }) => (
-  <View className={className}>{children}</View>
-);
+import { parseNumber, isNumberValid, formatNumber  } from "@/utils";
+import Box from "../components/Box";
 
 type Operacao = 'todas' | 'soma' | 'sub' | 'mul' | 'div' | 'mod';
-
-function parseNumber(texto: string): number {
-  return Number(texto.trim().replace(',', '.'));
-}
-
-function isNumberValid(n: number): boolean {
-  return Number.isFinite(n);
-}
-
-function formatNumber(n: number): string {
-  return Number.isInteger(n) ? String(n) : n.toString();
-}
 
 export default function Calculator() {
   const [aText, setAText] = useState<string>('');
@@ -57,11 +43,7 @@ export default function Calculator() {
     return { valido: true, a, b, linhas: map[op] };
   }, [aText, bText, op]);
 
-  function calcular() {
-    // no RN, já calculamos em tempo real via useMemo;
-    // aqui só fechamos o teclado para UX
-    Keyboard.dismiss();
-  }
+  const calcular = () => Keyboard.dismiss() ;
 
   function limpar() {
     setAText('');
