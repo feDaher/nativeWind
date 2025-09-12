@@ -4,7 +4,7 @@ import { View, Text, TextInput, TextInputProps } from "react-native";
 type InputProps = TextInputProps & {
     label: string;
     className?: string;
-}
+};
 
 export default function Input({ label, className, ...props}: InputProps) {
     return(

@@ -4,6 +4,7 @@ import { Picker } from "@react-native-picker/picker";
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Box from "../components/Box";
 import Input from "../components/Input";
+import Buttons from "../components/Buttons";
 
 type RootStackParamList = {
   Home: undefined;
@@ -33,14 +34,20 @@ export default function Calculator({ navigation }: CalculatorScreenProps) {
   const [bText, setBText] = useState<string>('');
   const [op, setOp] = useState<Operacao>('todas');
 
-  const { valido, a, b, linhas } = useMemo(() => {
+  const {valido, a, b, linhas, tipoMsg } = useMemo(() => {
     const a = parseNumber(aText);
     const b = parseNumber(bText);
 
-    // Corrigido para aceitar zero como entrada válida
-    if (aText.trim() === '' || bText.trim() === '' || !isNumberValid(a) || !isNumberValid(b)) {
-      return { valido: false, a, b, linhas: ["Entrada inválida. Informe dois números."] };
+     //Corrigido para aceitar zero como entrada válida
+
+    if (aText.trim() === '' || bText.trim() === ''){
+      return {  valido: false, a, b, linhas: ["Informe dois números."], tipoMsg: "vazio"};
     }
+
+    if (!isNumberValid(a) || !isNumberValid(b)) {
+      return { valido: false, a, b, linhas: ["Entrada inválida. Informe dois números."], tipoMsg: "invalido" };
+    }
+
 
     const soma = a + b;
     const sub = a - b;
@@ -63,7 +70,7 @@ export default function Calculator({ navigation }: CalculatorScreenProps) {
       ],
     };
 
-    return { valido: true, a, b, linhas: map[op] };
+    return { valido: true, a, b, linhas: map[op], tipoMsg: null };
   }, [aText, bText, op]);
 
   function calcular() {
@@ -123,25 +130,39 @@ export default function Calculator({ navigation }: CalculatorScreenProps) {
           </View>
 
           <View className="flex-row gap-3 mt-3">
-            <Pressable onPress={calcular} className="bg-blue-600 rounded-lg px-4 py-2 shadow">
-              <Text className="text-white font-semibold">Calcular</Text>
-            </Pressable>
-            <Pressable onPress={limpar} className="bg-zinc-200 rounded-lg px-4 py-2 shadow">
-              <Text className="text-zinc-800 font-semibold">Limpar</Text>
-            </Pressable>
-            <Pressable
-              onPress={() => navigation.goBack()}
-              className="bg-blue-400 rounded-lg px-4 py-2 shadow"
-            >
-              <Text className="text-white font-semibold">Voltar</Text>
-            </Pressable>
+            <Buttons
+              title="Calcular"
+              onPress={calcular}
+              className="bg-green-600 rounded-lg px-4 py-2 font-bold"
+              textClassName="text-white font-semibold"
+              />
+            <Buttons
+              title="Limpar"
+              onPress={limpar}
+              className="bg-red-400 rounded-lg px-4 py-2 font-bold"
+              textClassName="bg-black-400 rounded-lg px-4 py-2"
+              />
+            <Buttons
+            title="Voltar"
+            onPress={()=> navigation.goBack()}
+            className="bg-blue-400 rounded-lg px-4 py-2 font-bold"
+            textClassName="text-white font-semibold"
+            />
           </View>
         </Box>
 
         <Text className="text-lg font-semibold mt-4 mb-2 text-center">Resultado</Text>
         <View className="rounded-lg bg-zinc-100 p-3 shadow">
           {!valido ? (
-            <Text className="text-red-600 font-semibold">{linhas[0]}</Text>
+            <Text 
+            className={
+              tipoMsg === "invalida" 
+              ? "text-red-600 font-semibold"
+              : "text-yellow-600 font-semibold"
+            }
+          >
+              {linhas[0]}
+            </Text>
           ) : (
             linhas.map((l, i) => <Text key={i}>{l}</Text>)
           )}
