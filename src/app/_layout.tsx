@@ -1,17 +1,39 @@
-import { Stack } from 'expo-router';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { Slot, useRouter, useSegments } from 'expo-router';
+import { useEffect } from 'react';
+import { ActivityIndicator, View } from 'react-native';
+import { AuthProvider, useAuth } from '@/src/context/AuthContext';
+
+function RootNavigationGuard() {
+  const { token, isLoading } = useAuth();
+  const segments = useSegments();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isLoading) return;
+    const inAuthGroup = segments[0] === '(auth)';
+
+    if (!token && !inAuthGroup) {
+      router.replace('/login');
+    } else if (token && inAuthGroup) {
+      router.replace('/tasks'); // rota dentro do grupo (app)
+    }
+  }, [token, isLoading, segments, router]);
+
+  if (isLoading) {
+    return (
+      <View className="flex-1 items-center justify-center bg-white">
+        <ActivityIndicator />
+      </View>
+    );
+  }
+
+  return <Slot />;
+}
 
 export default function RootLayout() {
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaProvider>
-        <Stack
-          screenOptions={{
-            headerShown: false,
-          }}
-        />
-      </SafeAreaProvider>
-    </GestureHandlerRootView>
+    <AuthProvider>
+      <RootNavigationGuard />
+    </AuthProvider>
   );
 }

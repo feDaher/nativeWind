@@ -1,13 +1,13 @@
 {
   "expo": {
-    "name": "Calculator",
-    "slug": "calculator",
+    "name": "Itens de Tarefas",
+    "slug": "tasks",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
-    "scheme": "calculator",
+    "scheme": "tasks",
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
