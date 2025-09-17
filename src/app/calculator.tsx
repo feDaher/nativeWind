@@ -2,8 +2,8 @@ import React, { useMemo, useState } from "react";
 import { View, Text, Pressable, Keyboard, ScrollView, SafeAreaView } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { parseNumber, isNumberValid, formatNumber  } from "@/utils";
-import Box from "../components/Box";
-import Input from "../components/Input";
+import Box from "./components/Box";
+import Input from "./components/Input";
 
 type Operacao = 'todas' | 'soma' | 'sub' | 'mul' | 'div' | 'mod';
 
