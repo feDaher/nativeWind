@@ -27,6 +27,15 @@ export default function AppTabs() {
       />
 
       <Tabs.Screen
+        name="calculator"
+        options={{
+          title: 'Calculadora',
+          headerShown: true,
+          tabBarIcon: ({ color, size }) => <Ionicons name="calculator" size={size} color={color} />,
+        }}
+      />
+
+      <Tabs.Screen
         name="settings"
         options={{
           title: 'Ajustes',

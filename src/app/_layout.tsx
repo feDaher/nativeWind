@@ -15,7 +15,7 @@ function RootNavigationGuard() {
     if (!token && !inAuthGroup) {
       router.replace('/login');
     } else if (token && inAuthGroup) {
-      router.replace('/tasks'); // rota dentro do grupo (app)
+      router.replace('/tasks');
     }
   }, [token, isLoading, segments, router]);
 
