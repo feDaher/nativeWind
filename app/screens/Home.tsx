@@ -1,9 +1,8 @@
-import { View, Text} from "react-native";
+import { View, Text } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../../App";
-import { globalStyles as styles } from "../styles";
 import ButtonRetro from "../Components/ButtonRetro";
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<
@@ -14,8 +13,8 @@ type HomeScreenNavigationProp = NativeStackNavigationProp<
 export default function Home() {
   const navigation = useNavigation<HomeScreenNavigationProp>();
 
- return (
-    <View style={styles.container}>
+  return (
+    <View className="flex-1 justify-center items-center bg-gray-100">
       <FontAwesome5
         name="calculator"
         size={64}
@@ -23,10 +22,14 @@ export default function Home() {
         style={{ marginBottom: 20 }}
       />
 
-      <Text style={styles.title}>RN + Expo + NativeWind + TSH</Text>
+      <Text
+        className="text-xs mb-3 leading-5 text-center"
+        style={{ fontFamily: "PressStart2P_400Regular" }}
+      >
+        RN + Expo + NativeWind + TSH
+      </Text>
 
-      {/* Container para espaçamento */}
-      <View style={{ marginTop: 20 }}>
+      <View className="mt-5">
         <ButtonRetro
           title="Ir para Calculator"
           onPress={() => navigation.navigate("Calculator")}

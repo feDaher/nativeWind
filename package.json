@@ -20,6 +20,7 @@
     "nativewind": "^4.1.23",
     "react": "19.0.0",
     "react-native": "0.79.5",
+    "react-native-dropdown-picker": "^5.4.6",
     "react-native-reanimated": "^4.0.2",
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.11.1"

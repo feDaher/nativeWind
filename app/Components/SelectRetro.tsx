@@ -1,70 +1,56 @@
-import React, { useState } from "react";
-import { View, Text, Pressable, Modal, FlatList, TouchableOpacity } from "react-native";
-import { fonts } from "../styles";
+import { useState } from "react";
+import { Modal, Pressable, Text, View } from "react-native";
 
-type SelectRetroProps = {
+export default function SelectRetro({
+  options,
+  selected,
+  onChange,
+}: {
   options: { label: string; value: string }[];
   selected: string;
   onChange: (value: string) => void;
-};
-
-export default function SelectRetro({ options, selected, onChange }: SelectRetroProps) {
+}) {
   const [open, setOpen] = useState(false);
-  const selectedLabel = options.find((o) => o.value === selected)?.label || "";
 
   return (
-    <View style={{ width: "90%", marginVertical: 6 }}>
+    <View className="w-11/12 border-2 border-[#7D5B8C] rounded-md my-2 items-center">
       <Pressable
-        style={{
-          borderWidth: 2,
-          borderColor: "#7D5B8C",
-          borderRadius: 5,
-          padding: 8,
-          backgroundColor: "#fff",
-        }}
         onPress={() => setOpen(true)}
+        className="p-2 w-full items-center"
       >
-      <Text style={{ fontFamily: fonts.retro, fontSize:7, textAlign: "center" }}>{selectedLabel}</Text>
+        <Text
+          className="text-center"
+          style={{ fontFamily: "PressStart2P_400Regular", fontSize: 10 }}
+        >
+          {options.find((opt) => opt.value === selected)?.label ?? "Selecione"}
+        </Text>
       </Pressable>
 
       <Modal visible={open} transparent animationType="fade">
-        <Pressable
-          style={{
-            flex: 1,
-            backgroundColor: "rgba(0,0,0,0.3)",
-            justifyContent: "center",  
-            alignItems: "center",    
-          }}
-          onPress={() => setOpen(false)}
-        >
-          <View
-            style={{
-              backgroundColor: "#fff",
-              borderRadius: 10,
-              padding: 10,
-              width: "80%",  
-              maxHeight: "50%",
-              alignItems: "center",     
-              justifyContent: "center",
-            }}
-          >
-            <FlatList
-              data={options}
-              keyExtractor={(item) => item.value}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  onPress={() => {
-                    onChange(item.value);
-                    setOpen(false);
+        <View className="flex-1 justify-center items-center bg-black/50">
+          <View className="bg-white border-2 border-[#7D5B8C] rounded-md p-4 w-10/12 items-center">
+            {options.map((opt) => (
+              <Pressable
+                key={opt.value}
+                onPress={() => {
+                  onChange(opt.value);
+                  setOpen(false);
+                }}
+                className="py-2 w-full items-center"
+              >
+                <Text
+                  className="text-center"
+                  style={{
+                    fontFamily: "PressStart2P_400Regular",
+                    fontSize: 10,
                   }}
-                  style={{ paddingVertical: 8 }}
                 >
-                  <Text style={{ fontFamily: fonts.retro, fontSize: 10 }}>{item.label}</Text>
-                </TouchableOpacity>
-              )}
-            />
+                  {opt.label}
+                </Text>
+              </Pressable>
+            ))}
           </View>
-        </Pressable>
+        </View>
       </Modal>
     </View>
   );
