@@ -10,12 +10,13 @@ function RootNavigationGuard() {
 
   useEffect(() => {
     if (isLoading) return;
+
     const inAuthGroup = segments[0] === '(auth)';
 
     if (!token && !inAuthGroup) {
-      router.replace('/login');
+      router.replace('/(auth)/login'); // envia para login se não tiver token
     } else if (token && inAuthGroup) {
-      router.replace('/tasks');
+      router.replace('/(app)/dashboard'); // envia para app se tiver token
     }
   }, [token, isLoading, segments, router]);
 

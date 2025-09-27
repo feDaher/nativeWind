@@ -1,30 +1,32 @@
 import { useEffect, useState } from 'react';
 import { View, Text, TextInput, Pressable, Alert } from 'react-native';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import { TaskService } from '@/src/service/taks';
+import { useTasks } from '@/src/context/TaskContext';
 import type { Task } from '@/src/types';
 
 export default function EditTask() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
+  const { tasks, updateTask } = useTasks();
+
   const [task, setTask] = useState<Task | null>(null);
   const [title, setTitle] = useState('');
 
   useEffect(() => {
-    (async () => {
-      if (!id) return;
-      const t = await TaskService.get(id);
-      setTask(t);
-      setTitle(t?.title ?? '');
-    })();
-  }, [id]);
-
-  const save = async () => {
     if (!id) return;
-    const t = title.trim();
-    if (!t) return Alert.alert('Validação', 'Informe um título');
-    await TaskService.update(id, { title: t });
-    router.back();
+    const t = tasks.find(t => t.id === id);
+    if (!t) return;
+    setTask(t);
+    setTitle(t.title);
+  }, [id, tasks]);
+
+  const save = () => {
+    if (!id) return;
+    const newTitle = title.trim();
+    if (!newTitle) return Alert.alert('Validação', 'Informe um título');
+
+    updateTask(id, { title: newTitle }); // atualiza no context
+    router.back(); // ao voltar, a lista já reflete a mudança
   };
 
   if (!task) {
@@ -46,7 +48,10 @@ export default function EditTask() {
         onChangeText={setTitle}
       />
 
-      <Pressable onPress={save} className="rounded-xl px-4 py-3 items-center bg-zinc-800">
+      <Pressable
+        onPress={save}
+        className="rounded-xl px-4 py-3 items-center bg-zinc-800"
+      >
         <Text className="text-white font-semibold">Salvar</Text>
       </Pressable>
     </View>
