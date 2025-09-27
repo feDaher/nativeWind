@@ -1,90 +1,79 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, TextInput, Pressable, FlatList, Alert } from 'react-native';
-import { Link, Stack } from 'expo-router';
-import { TaskService } from '@/src/service/taks';
-import type { Task } from '@/src/types';
-import { useAuth } from '@/src/context/AuthContext';
+import { Stack, Link } from 'expo-router';
+import { useTasks } from '@/src/context/TaskContext';
 
 export default function TaskList() {
-  const { signOut } = useAuth();
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const { tasks, createTask, toggleTask, removeTask } = useTasks();
   const [title, setTitle] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  async function load() {
-    setLoading(true);
-    const data = await TaskService.list();
-    setTasks(data);
-    setLoading(false);
-  }
+  // State local para forçar re-render
+  const [tasksState, setTasksState] = useState(tasks);
 
+  // Atualiza state local sempre que o context mudar
   useEffect(() => {
-    load();
-  }, []);
+    setTasksState(tasks);
+  }, [tasks]);
 
-  const addTask = async () => {
+  const handleAddTask = () => {
     const t = title.trim();
     if (!t) return;
-    await TaskService.create(t);
+    setLoading(true);
+    createTask(t);
     setTitle('');
-    load();
+    setLoading(false);
   };
 
-  const toggle = async (id: string) => {
-    await TaskService.toggle(id);
-    load();
+  const handleToggle = (id: string) => {
+    toggleTask(id);
   };
 
-  const remove = async (id: string) => {
+  const handleRemove = (id: string) => {
     Alert.alert('Excluir', 'Tem certeza que deseja excluir?', [
       { text: 'Cancelar', style: 'cancel' },
-      {
-        text: 'Excluir',
-        style: 'destructive',
-        onPress: async () => { await TaskService.remove(id); load(); },
-      },
+      { text: 'Excluir', style: 'destructive', onPress: () => removeTask(id) },
     ]);
   };
 
   return (
     <View className="flex-1 bg-white">
-      <Stack.Screen
-        options={{
-          title: 'Tarefas',
-          headerShown: true,
-          headerRight: () => (
-            <Pressable onPress={signOut} className="px-3 py-1 rounded-lg">
-              <Text className="text-red-600 font-semibold">Sair</Text>
-            </Pressable>
-          ),
-        }}
-      />
+      <Stack.Screen options={{ title: 'Tarefas', headerShown: true }} />
 
-      <View className="p-4">
-        <View className="flex-row gap-2">
-          <TextInput
-            className="flex-1 border border-zinc-300 rounded-xl px-3 py-2"
-            placeholder="Nova tarefa..."
-            value={title}
-            onChangeText={setTitle}
-            onSubmitEditing={addTask}
-          />
-          <Pressable onPress={addTask} className="px-4 py-2 rounded-xl bg-zinc-800">
-            <Text className="text-white font-semibold">Adicionar</Text>
-          </Pressable>
-        </View>
+      {/* Input e botão de adicionar */}
+      <View className="p-4 flex-row gap-2">
+        <TextInput
+          className="flex-1 border border-zinc-300 rounded-xl px-3 py-2"
+          placeholder="Nova tarefa..."
+          value={title}
+          onChangeText={setTitle}
+          onSubmitEditing={handleAddTask}
+        />
+        <Pressable
+          onPress={handleAddTask}
+          className="px-4 py-2 rounded-xl bg-zinc-800"
+        >
+          <Text className="text-white font-semibold">
+            {loading ? 'Adicionando...' : 'Adicionar'}
+          </Text>
+        </Pressable>
       </View>
 
+      {/* Lista de tarefas */}
       <FlatList
-        data={tasks}
-        refreshing={loading}
-        onRefresh={load}
+        data={tasksState}
         keyExtractor={(item) => item.id}
+        extraData={tasksState}
         contentContainerStyle={{ padding: 16, gap: 8 }}
         renderItem={({ item }) => (
           <View className="border border-zinc-200 rounded-xl p-3 flex-row items-center justify-between">
-            <Pressable onPress={() => toggle(item.id)} className="flex-1">
-              <Text className={`text-base ${item.done ? 'line-through text-zinc-400' : 'text-zinc-900'}`}>
+            {/* Título e status */}
+            <Pressable onPress={() => handleToggle(item.id)} className="flex-1">
+              <Text
+                className={`text-base ${
+                  item.done ? 'line-through text-zinc-400' : 'text-zinc-900'
+                }`}
+              >
                 {item.title}
               </Text>
               <Text className="text-xs text-zinc-400 mt-1">
@@ -92,17 +81,36 @@ export default function TaskList() {
               </Text>
             </Pressable>
 
+            {/* Botões */}
             <View className="flex-row gap-3">
-              <Link
-                href={`/tasks/${item.id}`}
-                asChild
+              {/* Botão alternador concluída */}
+              <Pressable
+                onPress={() => handleToggle(item.id)}
+                className={`px-3 py-1 rounded-lg ${
+                  item.done ? 'bg-yellow-100' : 'bg-green-100'
+                }`}
               >
+                <Text
+                  className={`font-semibold ${
+                    item.done ? 'text-yellow-600' : 'text-green-600'
+                  }`}
+                >
+                  {item.done ? 'Desmarcar' : 'Concluir'}
+                </Text>
+              </Pressable>
+
+              {/* Botão editar */}
+              <Link href={`/tasks/${item.id}`} asChild>
                 <Pressable className="px-3 py-1 rounded-lg bg-zinc-200">
                   <Text>Editar</Text>
                 </Pressable>
               </Link>
 
-              <Pressable onPress={() => remove(item.id)} className="px-3 py-1 rounded-lg bg-red-100">
+              {/* Botão excluir */}
+              <Pressable
+                onPress={() => handleRemove(item.id)}
+                className="px-3 py-1 rounded-lg bg-red-100"
+              >
                 <Text className="text-red-600">Excluir</Text>
               </Pressable>
             </View>
