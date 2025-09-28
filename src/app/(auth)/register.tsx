@@ -1,4 +1,4 @@
-import {View, Text, TextInput, Pressable, Alert } from 'react-native';
+import {View, Text, TextInput, Pressable, Alert, Keyboard, KeyboardAvoidingView, Platform, TouchableWithoutFeedback } from 'react-native';
 import { Stack } from 'expo-router';
 import { useRouter } from 'expo-router';
 import { useAuth } from '@/src/context/AuthContext';
@@ -44,7 +44,12 @@ export default function register() {
         }
     }
     return(
-<View className="flex-1 items-center justify-center bg-white px-6">
+<KeyboardAvoidingView
+            className="flex-1 bg-white px-6"
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+          >
+  <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+    <View className="flex-1 items-center justify-center bg-white px-6">
       <Stack.Screen options={{ title: 'Entrar', headerShown: true }} />
       <Text className="text-2xl font-bold mb-6">Registre-se</Text>
 
@@ -106,5 +111,7 @@ export default function register() {
         <Text className="text-white font-semibold">{loading ? 'Confirmando...' : 'Confirmar'}</Text>
       </Pressable>
     </View>
+  </TouchableWithoutFeedback>
+</KeyboardAvoidingView>
   );
 }

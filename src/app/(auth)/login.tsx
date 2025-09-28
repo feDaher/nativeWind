@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, TextInput, Pressable, Alert } from 'react-native';
+import { View, Text, TextInput, Pressable, Alert, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { useAuth } from '@/src/context/AuthContext';
 import { Stack } from 'expo-router';
 import { useRouter } from 'expo-router';
@@ -23,41 +23,53 @@ export default function Login() {
   };
 
   return (
-    <View className="flex-1 items-center justify-center bg-white px-6">
-      <Stack.Screen options={{ title: 'Entrar', headerShown: true }} />
-      <Text className="text-2xl font-bold mb-6">Bem-vindo</Text>
+   <KeyboardAvoidingView
+      className="flex-1 bg-white px-6"
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <View className="flex-1 items-center justify-center">
+          <Stack.Screen options={{ title: 'Entrar', headerShown: true }} />
 
-      <TextInput
-        className="w-full border border-zinc-300 rounded-xl px-4 py-3 mb-3"
-        placeholder="E-mail"
-        keyboardType="email-address"
-        autoCapitalize="none"
-        value={email}
-        onChangeText={setEmail}
-      />
-      <TextInput
-        className="w-full border border-zinc-300 rounded-xl px-4 py-3 mb-4"
-        placeholder="Senha"
-        secureTextEntry
-        value={pwd}
-        onChangeText={setPwd}
-      />
+          <Text className="text-2xl font-bold mb-6">Bem-vindo</Text>
 
-      <Pressable
-        onPress={handleLogin}
-        disabled={loading}
-        className="w-full rounded-xl px-4 py-3 items-center justify-center bg-zinc-800"
-      >
-        <Text className="text-white font-semibold">{loading ? 'Entrando...' : 'Entrar'}</Text>
-      </Pressable>
+          <TextInput
+            className="w-full border border-zinc-300 rounded-xl px-4 py-3 mb-3"
+            placeholder="E-mail"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            value={email}
+            onChangeText={setEmail}
+          />
+          <TextInput
+            className="w-full border border-zinc-300 rounded-xl px-4 py-3 mb-4"
+            placeholder="Senha"
+            secureTextEntry
+            value={pwd}
+            onChangeText={setPwd}
+          />
 
-      <Pressable
-      onPress={() => router.push('/(auth)/register')}
-      disabled={loading}
-      className="w-full rounded-xl px-4 py-3 items-center justify-center bg-blue-600 mt-3"
-      >
-        <Text className="text-white font-semibold">{loading ? 'Registrando...' : 'Registre-se'}</Text>
-      </Pressable>
-    </View>
+          <Pressable
+            onPress={handleLogin}
+            disabled={loading}
+            className="w-full rounded-xl px-4 py-3 items-center justify-center bg-zinc-800"
+          >
+            <Text className="text-white font-semibold">
+              {loading ? 'Entrando...' : 'Entrar'}
+            </Text>
+          </Pressable>
+
+          <Pressable
+            onPress={() => router.push('/(auth)/register')}
+            disabled={loading}
+            className="w-full rounded-xl px-4 py-3 items-center justify-center bg-blue-600 mt-3"
+          >
+            <Text className="text-white font-semibold">
+              {loading ? 'Registrando...' : 'Registre-se'}
+            </Text>
+          </Pressable>
+        </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }
