@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { View, Text, TextInput, Pressable, Alert } from 'react-native';
 import { useAuth } from '@/src/context/AuthContext';
 import { Stack } from 'expo-router';
+import { useRouter } from 'expo-router';
 
 export default function Login() {
-  const { signIn } = useAuth();
+  const router = useRouter();
+  const { signIn} = useAuth();
   const [email, setEmail] = useState('');
   const [pwd, setPwd] = useState('');
   const [loading, setLoading] = useState(false);
@@ -47,6 +49,14 @@ export default function Login() {
         className="w-full rounded-xl px-4 py-3 items-center justify-center bg-zinc-800"
       >
         <Text className="text-white font-semibold">{loading ? 'Entrando...' : 'Entrar'}</Text>
+      </Pressable>
+
+      <Pressable
+      onPress={() => router.push('/(auth)/register')}
+      disabled={loading}
+      className="w-full rounded-xl px-4 py-3 items-center justify-center bg-blue-600 mt-3"
+      >
+        <Text className="text-white font-semibold">{loading ? 'Registrando...' : 'Registre-se'}</Text>
       </Pressable>
     </View>
   );
