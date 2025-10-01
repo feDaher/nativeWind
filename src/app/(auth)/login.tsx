@@ -16,7 +16,7 @@ export default function Login() {
     } catch (e: any) {
       Alert.alert('Erro', e?.message ?? 'Falha no login');
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   };
 
