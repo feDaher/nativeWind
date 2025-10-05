@@ -56,11 +56,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const foundUser = users.find(u => u.email === email);
 
     if (!foundUser) {
-      throw new Error("Usuário não encontrado!");
+      throw new Error("Usuário não encontrado!!");
     }
 
     if (foundUser.password !== password) {
-      throw new Error("Senha incorreta!");
+      throw new Error("Senha incorreta!!");
     }
 
     const fakeJwt = 'demo-' + Math.random().toString(36).slice(2);
