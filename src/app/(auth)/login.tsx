@@ -1,12 +1,21 @@
 import { useState } from 'react';
-import { View, Text, TextInput, Pressable, Alert, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { 
+  View, 
+  Text, 
+  TextInput, 
+  Pressable, 
+  Alert, 
+  KeyboardAvoidingView, 
+  Platform, 
+  TouchableWithoutFeedback, 
+  Keyboard 
+} from 'react-native';
 import { useAuth } from '@/src/context/AuthContext';
-import { Stack } from 'expo-router';
-import { useRouter } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 
 export default function Login() {
   const router = useRouter();
-  const { signIn} = useAuth();
+  const { signIn } = useAuth();
   const [email, setEmail] = useState('');
   const [pwd, setPwd] = useState('');
   const [loading, setLoading] = useState(false);
@@ -14,7 +23,12 @@ export default function Login() {
   const handleLogin = async () => {
     try {
       setLoading(true);
+
+      // Agora o signIn já cuida de salvar no SecureStore e no contexto
       await signIn(email.trim(), pwd);
+
+      Alert.alert("Sucesso", "Login realizado!");
+      router.push("/home"); // redireciona pra home/dashboard
     } catch (e: any) {
       Alert.alert('Erro', e?.message ?? 'Falha no login');
     } finally {
@@ -23,7 +37,7 @@ export default function Login() {
   };
 
   return (
-   <KeyboardAvoidingView
+    <KeyboardAvoidingView
       className="flex-1 bg-white px-6"
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
